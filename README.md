@@ -11,9 +11,49 @@
             --primary: #FF6B35;
             --secondary: #004E89;
             --accent: #F7B801;
-            --dark: #1A1A2E;
-            --light: #F4F4F9;
             --success: #00D9A3;
+            
+            /* Light mode */
+            --bg-light: linear-gradient(135deg, #F4F4F9 0%, #E8E8F0 100%);
+            --text-light: #1A1A2E;
+            --card-bg-light: rgba(26, 26, 46, 0.05);
+            --border-light: rgba(26, 26, 46, 0.1);
+            --input-bg-light: rgba(255, 255, 255, 0.9);
+            --shadow-light: 0 4px 16px rgba(0, 0, 0, 0.1);
+            
+            /* Dark mode */
+            --bg-dark: linear-gradient(135deg, #1A1A2E 0%, #16213E 100%);
+            --text-dark: #F4F4F9;
+            --card-bg-dark: rgba(255, 255, 255, 0.05);
+            --border-dark: rgba(255, 255, 255, 0.1);
+            --input-bg-dark: rgba(0, 0, 0, 0.3);
+            --shadow-dark: 0 4px 16px rgba(0, 0, 0, 0.3);
+            
+            /* Default (dark) */
+            --current-bg: var(--bg-dark);
+            --current-text: var(--text-dark);
+            --current-card-bg: var(--card-bg-dark);
+            --current-border: var(--border-dark);
+            --current-input-bg: var(--input-bg-dark);
+            --current-shadow: var(--shadow-dark);
+        }
+
+        [data-theme="light"] {
+            --current-bg: var(--bg-light);
+            --current-text: var(--text-light);
+            --current-card-bg: var(--card-bg-light);
+            --current-border: var(--border-light);
+            --current-input-bg: var(--input-bg-light);
+            --current-shadow: var(--shadow-light);
+        }
+
+        [data-theme="dark"] {
+            --current-bg: var(--bg-dark);
+            --current-text: var(--text-dark);
+            --current-card-bg: var(--card-bg-dark);
+            --current-border: var(--border-dark);
+            --current-input-bg: var(--input-bg-dark);
+            --current-shadow: var(--shadow-dark);
         }
 
         * {
@@ -24,8 +64,8 @@
 
         body {
             font-family: 'Outfit', sans-serif;
-            background: var(--tg-theme-bg-color, linear-gradient(135deg, #1A1A2E 0%, #16213E 100%));
-            color: var(--tg-theme-text-color, var(--light));
+            background: var(--current-bg);
+            color: var(--current-text);
             min-height: 100vh;
             height: 100%;
             overflow-x: hidden;
@@ -33,6 +73,7 @@
             margin: 0;
             padding: 0;
             -webkit-overflow-scrolling: touch;
+            transition: background 0.3s ease, color 0.3s ease;
         }
         
         html {
@@ -53,12 +94,79 @@
             z-index: 0;
         }
 
+        .theme-switch-wrapper {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: var(--current-card-bg);
+            backdrop-filter: blur(10px);
+            padding: 8px 12px;
+            border-radius: 30px;
+            border: 1px solid var(--current-border);
+            box-shadow: var(--current-shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .theme-icon {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
         .container {
             max-width: 100%;
             margin: 0;
             padding: 0.5rem;
             position: relative;
             z-index: 1;
+            padding-top: 50px;
         }
 
         header {
@@ -82,7 +190,8 @@
 
         .subtitle {
             font-size: 0.75rem;
-            color: #B8C1EC;
+            color: var(--current-text);
+            opacity: 0.8;
             font-weight: 300;
             letter-spacing: 0.02em;
         }
@@ -95,12 +204,13 @@
         }
 
         .input-section {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--current-card-bg);
             backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--current-border);
+            box-shadow: var(--current-shadow);
+            transition: background 0.3s ease, border 0.3s ease;
         }
 
         .form-title {
@@ -119,7 +229,7 @@
             display: block;
             margin-bottom: 0.3rem;
             font-weight: 600;
-            color: var(--light);
+            color: var(--current-text);
             font-size: 0.8rem;
             letter-spacing: 0.02em;
         }
@@ -127,10 +237,10 @@
         input, select {
             width: 100%;
             padding: 0.65rem;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--current-border);
+            background: var(--current-input-bg);
             border-radius: 8px;
-            color: var(--light);
+            color: var(--current-text);
             font-size: 0.9rem;
             font-family: 'Outfit', sans-serif;
             transition: all 0.3s ease;
@@ -139,13 +249,13 @@
         input:focus, select:focus {
             outline: none;
             border-color: var(--primary);
-            background: rgba(0, 0, 0, 0.4);
+            background: var(--current-input-bg);
             box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
         }
 
         select option {
-            background: var(--dark);
-            color: var(--light);
+            background: var(--current-card-bg);
+            color: var(--current-text);
         }
 
         .btn-generate {
@@ -181,15 +291,16 @@
         }
 
         .results-section {
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--current-card-bg);
             backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--current-border);
+            box-shadow: var(--current-shadow);
             min-height: 150px;
             display: flex;
             flex-direction: column;
+            transition: background 0.3s ease, border 0.3s ease;
         }
 
         .results-title {
@@ -221,7 +332,7 @@
         }
 
         .recommendation-card {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.2);
             border-left: 3px solid var(--accent);
             border-radius: 8px;
             padding: 0.75rem;
@@ -239,7 +350,8 @@
 
         .recommendation-card p {
             line-height: 1.4;
-            color: #E0E0E0;
+            color: var(--current-text);
+            opacity: 0.9;
             margin-bottom: 0.5rem;
             font-size: 0.85rem;
         }
@@ -253,7 +365,8 @@
             padding: 0.3rem 0;
             padding-left: 1rem;
             position: relative;
-            color: #C0C0C0;
+            color: var(--current-text);
+            opacity: 0.8;
             line-height: 1.3;
             font-size: 0.8rem;
         }
@@ -274,12 +387,14 @@
             margin: 0.15rem 0.15rem 0.15rem 0;
             font-weight: 600;
             font-size: 0.7rem;
+            color: white;
         }
 
         .empty-state {
             text-align: center;
             padding: 2rem;
-            color: #666;
+            color: var(--current-text);
+            opacity: 0.5;
         }
 
         .empty-state svg {
@@ -287,6 +402,7 @@
             height: 60px;
             opacity: 0.3;
             margin-bottom: 0.75rem;
+            stroke: var(--current-text);
         }
 
         .empty-state p {
@@ -343,6 +459,16 @@
 </head>
 <body>
     <div class="background-pattern"></div>
+    
+    <!-- Theme Switch Button -->
+    <div class="theme-switch-wrapper">
+        <span class="theme-icon">☀️</span>
+        <label class="theme-switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider"></span>
+        </label>
+        <span class="theme-icon">🌙</span>
+    </div>
     
     <div class="container">
         <header>
@@ -428,8 +554,39 @@
         tg.expand();
         tg.enableClosingConfirmation();
         
-        // Set theme colors
-        document.body.style.background = tg.themeParams.bg_color || 'linear-gradient(135deg, #1A1A2E 0%, #16213E 100%)';
+        // Theme management
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            
+            // Update toggle checkbox
+            const toggle = document.getElementById('theme-toggle');
+            if (toggle) {
+                toggle.checked = theme === 'light';
+            }
+            
+            // Update body background for Telegram
+            if (theme === 'light') {
+                document.body.style.background = 'linear-gradient(135deg, #F4F4F9 0%, #E8E8F0 100%)';
+            } else {
+                document.body.style.background = tg.themeParams.bg_color || 'linear-gradient(135deg, #1A1A2E 0%, #16213E 100%)';
+            }
+        }
+        
+        // Get saved theme or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        setTheme(savedTheme);
+        
+        // Theme toggle event listener
+        document.getElementById('theme-toggle').addEventListener('change', function(e) {
+            const newTheme = e.target.checked ? 'light' : 'dark';
+            setTheme(newTheme);
+            
+            // Haptic feedback
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+        });
         
         document.getElementById('userForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -678,7 +835,7 @@
             
             let exercisesHTML = recommendations.exercises.map(ex => `
                 <li><strong>${ex.name}</strong> - ${ex.duration}<br>
-                    <span style="color: #999; font-size: 0.9em;">Ishlayotgan mushaklar: ${ex.muscles}</span>
+                    <span style="color: var(--current-text); opacity: 0.6; font-size: 0.9em;">Ishlayotgan mushaklar: ${ex.muscles}</span>
                 </li>
             `).join('');
             
